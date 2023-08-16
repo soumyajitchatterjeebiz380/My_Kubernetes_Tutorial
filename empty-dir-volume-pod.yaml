@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty-dir-pod
+  namespace: default
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+    imagePullPolicy: Always
+    volumeMounts:
+    - mountPath: /var/i-am-empty-dir-volume
+      name: empty-dir-volume
+  - name: busybox-container
+    image: busybox
+    imagePullPolicy: Always
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do sleep 30; done;"]
+    volumeMounts:
+    - mountPath: /var/i-am-empty-dir-volume
+      name: empty-dir-volume
+  volumes:
+  - name: empty-dir-volume
+    emptyDir: {}

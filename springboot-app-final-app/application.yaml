@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: hello-world-springboot-app
+    labels:
+        app: springboot
+spec:
+    containers:
+        - name: my-hello-world
+          image: 266923402202.dkr.ecr.us-west-1.amazonaws.com/springbootimages:latest
+          ports:
+            - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: hello-world-springboot-app-service
+spec:
+    selector:
+        app: springboot
+    type: NodePort
+    ports:
+        - port: 80
+          targetPort: 8080
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name : my-ingress-spring
+    annotations:
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        kubernetes.io/ingress.class: alb
+spec:
+    rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+                name: hello-world-springboot-app-service
+                port:
+                    number : 80
+          
+          
